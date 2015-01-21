@@ -1,0 +1,16 @@
+<html>
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link href="styles.css" type="text/css" rel="stylesheet" />
+</head>
+<body>
+	<h1>Photos of Cat</h1>
+	<ul id="cats"></ul>
+	<script>
+		var flickr_api_key = "208dae30f9b67f9b1870a81f5feb0328";
+		var flickr_api_url = "https://api.flickr.com/services/rest/?format=json&method=flickr.photos.search&api_key="+flickr_api_key;
+	</script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+	<script src="main.js"></script>
+</body>
+</html>

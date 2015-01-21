@@ -1,73 +1,78 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+// Set the CACHE_NAME first
+self.CACHE_NAME = 'cats-pictures-v1';
+
+// and require the sw-cache-all
+require('../../index.js');
+
+},{"../../index.js":2}],2:[function(require,module,exports){
 // caches polyfill because it is not added to native yet!
 var caches = require('./lib/serviceworker-caches');
 
-module.exports = SWCacheAll;
-
-function SWCacheAll(opts) {
-
-	if(typeof opts.cache_name !== 'string') {
-		throw new Error('Cache Name cannot be left empty and must be of type String');
-	}
-
-	self.addEventListener('fetch', function(event) {
-
-		// Clone the request for fetch and cache
-		// A request is a stream and can be consumed only once.
-		var fetchRequest = event.request.clone(),
-			cacheRequest = event.request.clone();
-
-		// Respond with content from fetch or cache
-		event.respondWith(
-
-			// Try fetch
-			fetch(fetchRequest)
-
-				// when fetch is successful, we update the cache
-				.then(function(response) {
-
-					// A response is a stream and can be consumed only once.
-					// Because we want the browser to consume the response,
-					// as well as cache to consume the response, we need to
-					// clone it so we have 2 streams
-					var responseToCache = response.clone();
-
-					// and update the cache
-					caches
-						.open(opts.cache_name)
-						.then(function(cache) {
-
-							// Clone the request again to use it as the key for our cache
-							var cacheSaveRequest = event.request.clone();
-							cache.put(cacheSaveRequest, responseToCache);
-
-						});
-
-				})
-
-				// when fetch times out or fails
-				.catch(function(err) {
-
-					// Return the promise which
-					// resolves on a match in cache for the current request
-					// ot rejects if no matches are found
-					return caches.match(cacheRequest);
-
-				})
-		);
-	});
-
-	// Now we need to clean up resources in the previous versions
-	// of Service Worker scripts
-	self.addEventListener('activate', function(event) {
-
-		// Destroy the cache
-		event.waitUntil(caches.delete(opts.cache_name));
-
-	});
+if(typeof self.CACHE_NAME !== 'string') {
+	throw new Error('Cache Name cannot be empty');
 }
 
-},{"./lib/serviceworker-caches":2}],2:[function(require,module,exports){
+self.addEventListener('fetch', function(event) {
+
+	// Clone the request for fetch and cache
+	// A request is a stream and can be consumed only once.
+	var fetchRequest = event.request.clone(),
+		cacheRequest = event.request.clone();
+
+	// Respond with content from fetch or cache
+	event.respondWith(
+
+		// Try fetch
+		fetch(fetchRequest)
+
+			// when fetch is successful, we update the cache
+			.then(function(response) {
+
+				// A response is a stream and can be consumed only once.
+				// Because we want the browser to consume the response,
+				// as well as cache to consume the response, we need to
+				// clone it so we have 2 streams
+				var responseToCache = response.clone();
+
+				// and update the cache
+				caches
+					.open(self.CACHE_NAME)
+					.then(function(cache) {
+
+						// Clone the request again to use it
+						// as the key for our cache
+						var cacheSaveRequest = event.request.clone();
+						cache.put(cacheSaveRequest, responseToCache);
+
+					});
+
+				// Return the response stream to be consumed by browser
+				return response;
+
+			})
+
+			// when fetch times out or fails
+			.catch(function(err) {
+
+				// Return the promise which
+				// resolves on a match in cache for the current request
+				// ot rejects if no matches are found
+				return caches.match(cacheRequest);
+
+			})
+	);
+});
+
+// Now we need to clean up resources in the previous versions
+// of Service Worker scripts
+self.addEventListener('activate', function(event) {
+
+	// Destroy the cache
+	event.waitUntil(caches.delete(self.CACHE_NAME));
+
+});
+},{"./lib/serviceworker-caches":3}],3:[function(require,module,exports){
 if (!Cache.prototype.add) {
   Cache.prototype.add = function add(request) {
     return this.addAll([request]);
@@ -152,5 +157,5 @@ if (!CacheStorage.prototype.match) {
   };
 }
 
-module.exports = caches;
+module.exports = self.caches;
 },{}]},{},[1]);
