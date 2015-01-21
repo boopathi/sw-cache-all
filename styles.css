@@ -1,0 +1,28 @@
+@import url(http://fonts.googleapis.com/css?family=Ubuntu+Mono);
+
+* {
+	margin: 0;
+	padding: 0;
+}
+ul, li {
+	list-style: none;
+}
+h1 {
+	background: black;
+	font-size: 16px;
+	border: solid 10px white;
+	color: white;
+	font-family: 'Ubuntu Mono', sans-serif;
+	text-align: center;
+	padding: 10px;
+}
+li {
+	border: solid 10px white;
+	border-top: 0;
+	text-align: center;
+	background: black;
+}
+img {
+	min-height: 50px;
+	max-width: 100%;
+}
