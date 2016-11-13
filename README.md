@@ -8,3 +8,7 @@ Explanation is annotated in the source code - `index.js`.
 ## Check examples for usage
 
 For online example see https://boopathi.github.io/sw-cache-all/
+
+## LICENSE
+
+https://boopathi.mit-license.org/2015
