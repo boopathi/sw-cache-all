@@ -1,5 +1,7 @@
 # Service Worker - Cache All
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/boopathi/sw-cache-all.svg)](https://greenkeeper.io/)
+
 A simple, bare minimum service worker that would cache all the requests,
 and can be used as a boiler plate to immediately take your webapp offline.
 
